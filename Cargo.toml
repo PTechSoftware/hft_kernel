@@ -1,0 +1,17 @@
+[package]
+name = "hft_ptechos"
+version = "0.1.0"
+authors = ["Ignacio Perez Panizza"]
+edition = "2021"     
+
+[dependencies] 
+bootloader = "0.9"
+# no std aquí
+
+[build-dependencies]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
