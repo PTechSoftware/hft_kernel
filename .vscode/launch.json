@@ -3,12 +3,13 @@
   "configurations": [
     {
       "name": "Run kernel in QEMU",
-      "type": "cppdbg",
+      "type": "lldb",
+      "preLaunchTask": "Build bootimage",
       "request": "launch",
       "program": "/usr/bin/qemu-system-x86_64",
       "args": [
         "-drive",
-        "format=raw,file=${workspaceFolder}/target/x86_64-hft/debug/bootimage-hft_ptechos.bin"
+        "format=raw,file=${workspaceFolder}/target/x86_64-hft/debug/bootimage-kernel_ptechos.bin"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

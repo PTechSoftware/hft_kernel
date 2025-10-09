@@ -4,7 +4,7 @@
     {
       "label": "Build bootimage",
       "type": "shell",
-      "command": "cargo bootimage",
+      "command": "cargo bootimage --target x86_64-hft.json",
       "group": {
         "kind": "build",
         "isDefault": true

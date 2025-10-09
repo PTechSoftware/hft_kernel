@@ -1,5 +1,5 @@
 [package]
-name = "hft_ptechos"
+name = "kernel_ptechos"
 version = "0.1.0"
 authors = ["Ignacio Perez Panizza"]
 edition = "2021"     
