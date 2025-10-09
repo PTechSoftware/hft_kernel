@@ -15,10 +15,9 @@ mod drivers;
 fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
-static HELLO: &[u8] = b"Hello World!";
 
 #[unsafe(no_mangle)]
+//This is the entrypoint of the OS
 pub extern "C" fn _start() -> ! {
-    vga::print_something();
     loop {}
 }
