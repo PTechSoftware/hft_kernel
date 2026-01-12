@@ -1,1 +1,1 @@
-pub(crate) mod vga_drivers;
+pub mod vga_drivers;

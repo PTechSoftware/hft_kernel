@@ -5,8 +5,14 @@ authors = ["Ignacio Perez Panizza"]
 edition = "2021"     
 
 [dependencies] 
-bootloader = "0.9"
-# no std aquí
+bootloader = "0.9.23"
+volatile = "0.2.6"
+spin = "0.9.0"
+x86_64 = "0.14.2"
+uart_16550 = "0.2.0"
+pc-keyboard = "0.5.0"
+lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+pic8259 = "0.10.1"
 
 [build-dependencies]
 
