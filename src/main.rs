@@ -1,39 +1,50 @@
-#![no_std] 
-#![no_main]
-#![feature(abi_x86_interrupt)]
+#![no_std] // No enlazar con la biblioteca estándar de Rust (std), necesaria para un sistema operativo bare-metal.
+#![no_main] // Desactivar el punto de entrada estándar 'main' de Rust, ya que no tenemos runtime.
+#![feature(abi_x86_interrupt)] // Habilitar la característica experimental para manejar interrupciones x86.
 
-//Imports
-use core::panic::PanicInfo;
+// Importaciones
+use core::panic::PanicInfo; // Importar la estructura PanicInfo para manejar errores fatales.
 
-//Modules
-mod drivers;
-mod gdt;
-mod interrupts;
-mod shell;
+// Declaración de módulos
+mod processor;      // Módulo para Control del Procesador (GDT, IDT).
+mod memory;         // Módulo para Gestión de Memoria.
+mod execution;      // Módulo para Ejecución y Tareas.
+mod drivers;        // Módulo para controladores de hardware (ej. VGA).
+mod shell;          // Módulo para la interfaz de línea de comandos.
 
-/// This function is called on panic.
-#[panic_handler]
+/// Esta función se llama cuando ocurre un pánico (error irrecuperable).
+#[panic_handler] // Atributo que marca esta función como el manejador de pánico.
 fn panic(info: &PanicInfo) -> ! {
-    println!("{}", info);
-    loop {}
+    println!("{}", info); // Imprimir la información del error en la pantalla.
+    loop {} // Bucle infinito para detener el sistema, ya que no podemos continuar.
 }
 
-#[no_mangle]
-//This is the entrypoint of the OS
+const WELCOME: &str = "    
+###############################################################################
+#                                                                             #
+# @@@@@@@@  @@@@@@@@@@                 @@@              @@@@@@      (@@@@@@   #
+# @@@   #@@    @@@                     @@@            @@@    @@@   @@@        #
+# @@@   #@@    @@@      @@@@    @@@@   @@@           @@@      @@@  @@@        #
+# @@@@@@@@@    @@@    @@___@  @@      @@@# @@@       @@@      @@@  @@@@@@@@   #
+# @@@          @@@    @@      @@      @@@  @@@       @@@     @@@        @@@   #
+# @@@          @@@     @@@@@@   @@@@   @@@  @@@        @@@@@@@     @@@@@@@@   #
+#                                                                             #
+#############################################################################";
+
+#[no_mangle] // Desactivar el 'name mangling' para que el linker pueda encontrar la función '_start'.
+// Este es el punto de entrada del sistema operativo.
 pub extern "C" fn _start() -> ! {
-    println!("Hello World{}", "!");
+    println!("{}", WELCOME); // Imprimir un mensaje de bienvenida para verificar la salida VGA.
     
-    gdt::init();
-    interrupts::init_idt();
-    unsafe { interrupts::PICS.lock().initialize() };
-    x86_64::instructions::interrupts::enable();
+    processor::gdt::init(); // Inicializar la Global Descriptor Table (GDT).
+    processor::idt::init_idt(); // Inicializar la Interrupt Descriptor Table (IDT).
+    unsafe { processor::idt::PICS.lock().initialize() }; // Inicializar el Programmable Interrupt Controller (PIC).
+    x86_64::instructions::interrupts::enable(); // Habilitar interrupciones de CPU (sti).
 
-    println!("It did not crash!");
-
-    crate::shell::run_shell();
+    crate::shell::run_shell(); // Iniciar el bucle de la shell interactiva.
     
-    #[allow(clippy::empty_loop)]
+    #[allow(clippy::empty_loop)] // Permitir un bucle vacío sin advertencias del linter.
     loop {
-        x86_64::instructions::hlt();
+        x86_64::instructions::hlt(); // Detener el CPU hasta la siguiente interrupción (ahorra energía).
     }
 }
