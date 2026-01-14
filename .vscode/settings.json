@@ -1,0 +1,8 @@
+{
+    "rust-analyzer.diagnostics.enable": false,
+    "rust-analyzer.checkOnSave.enable": false,
+    "rust-analyzer.cargo.noDefaultFeatures": true,
+    "rust-analyzer.inlayHints.typeHints.enable": true,
+    "rust-analyzer.inlayHints.parameterHints.enable": true,
+    "rust-analyzer.inlayHints.chainingHints.enable": true
+}
