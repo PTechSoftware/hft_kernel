@@ -4,7 +4,6 @@
     {
       "name": "Run kernel in QEMU",
       "type": "lldb",
-      "preLaunchTask": "Build bootimage",
       "request": "launch",
       "program": "/usr/bin/qemu-system-x86_64",
       "args": [
