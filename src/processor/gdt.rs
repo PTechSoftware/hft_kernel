@@ -1,7 +1,7 @@
-use x86_64::structures::gdt::{GlobalDescriptorTable, Descriptor, SegmentSelector};
+use lazy_static::lazy_static;
+use x86_64::structures::gdt::{Descriptor, GlobalDescriptorTable, SegmentSelector};
 use x86_64::structures::tss::TaskStateSegment;
 use x86_64::VirtAddr;
-use lazy_static::lazy_static;
 
 // Definir el índice para la pila de Double Fault en la Interrupt Stack Table (IST).
 pub const DOUBLE_FAULT_IST_INDEX: u16 = 0;
@@ -32,24 +32,44 @@ lazy_static! {
     // La GDT contiene entradas para el segmento de código y el segmento TSS.
     static ref GDT: (GlobalDescriptorTable, Selectors) = {
         let mut gdt = GlobalDescriptorTable::new();
-        // Agregar un descriptor para el segmento de código del kernel.
+
+        // Kernel Code Segment (Ring 0)
         let code_selector = gdt.add_entry(Descriptor::kernel_code_segment());
-        // Agregar un descriptor para el segmento TSS.
+        // Kernel Data Segment (Ring 0)
+        let data_selector = gdt.add_entry(Descriptor::kernel_data_segment());
+
+        // User Data Segment (Ring 3)
+        let user_data_selector = gdt.add_entry(Descriptor::user_data_segment());
+        // User Code Segment (Ring 3)
+        let user_code_selector = gdt.add_entry(Descriptor::user_code_segment());
+
+        // TSS Segment
         let tss_selector = gdt.add_entry(Descriptor::tss_segment(&TSS));
-        (gdt, Selectors { code_selector, tss_selector })
+
+        (gdt, Selectors {
+            code_selector,
+            data_selector,
+            user_code_selector,
+            user_data_selector,
+            tss_selector
+        })
     };
 }
 
 // Estructura auxiliar para guardar los selectores de segmento que necesitamos recargar.
-struct Selectors {
-    code_selector: SegmentSelector,
-    tss_selector: SegmentSelector,
+#[allow(dead_code)]
+pub struct Selectors {
+    pub code_selector: SegmentSelector,
+    pub data_selector: SegmentSelector,
+    pub user_code_selector: SegmentSelector,
+    pub user_data_selector: SegmentSelector,
+    pub tss_selector: SegmentSelector,
 }
 
 // Función pública para inicializar la GDT.
 pub fn init() {
+    use x86_64::instructions::segmentation::{Segment, CS};
     use x86_64::instructions::tables::load_tss;
-    use x86_64::instructions::segmentation::{CS, Segment};
 
     GDT.0.load(); // Cargar la GDT utilizando la instrucción LGDT.
     unsafe {
