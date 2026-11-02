@@ -10,6 +10,23 @@
         "isDefault": true
       },
       "problemMatcher": []
+    },
+    {
+      "label": "Run kernel in QEMU",
+      "type": "shell",
+      "command": "cargo run",
+      "options": {
+        "env": {
+          "PATH": "${env:PATH};C:\\Program Files\\qemu"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup Windows Environment",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File \"${workspaceFolder}/windows_precompile.ps1\"",
+      "problemMatcher": []
     }
   ]
 }

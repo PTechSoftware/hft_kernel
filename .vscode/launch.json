@@ -6,6 +6,9 @@
       "type": "lldb",
       "request": "launch",
       "program": "/usr/bin/qemu-system-x86_64",
+      "windows": {
+        "program": "C:\\Program Files\\qemu\\qemu-system-x86_64.exe"
+      },
       "args": [
         "-drive",
         "format=raw,file=${workspaceFolder}/target/x86_64-hft/debug/bootimage-kernel_ptechos.bin"
