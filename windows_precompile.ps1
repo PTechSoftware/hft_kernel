@@ -26,16 +26,17 @@ if (Test-Path $qemuDefaultPath) {
     }
 }
 
-# 3. Agregar componentes de Rust requeridos para compilar bare-metal
-Write-Host "[3/4] Instalando componentes de rustup (rust-src, llvm-tools-preview)..." -ForegroundColor Yellow
+# 3. Sincronizar toolchain y componentes definidos en rust-toolchain.toml
+Write-Host "[3/4] Verificando toolchain y componentes de Rust (rust-src, llvm-tools-preview)..." -ForegroundColor Yellow
 rustup component add rust-src llvm-tools-preview
 
-# 4. Instalar bootimage
-if (-not (Get-Command cargo-bootimage -ErrorAction SilentlyContinue)) {
-    Write-Host "[4/4] Instalando cargo bootimage..." -ForegroundColor Yellow
-    cargo install bootimage
+# 4. Instalar bootimage v0.10.3 (compatible con nightly-2026-01-14 y bootloader 0.9.33)
+$bootimageVer = if (Get-Command cargo-bootimage -ErrorAction SilentlyContinue) { cargo bootimage --version 2>$null } else { "" }
+if ($bootimageVer -notlike "*0.10.3*") {
+    Write-Host "[4/4] Instalando cargo bootimage v0.10.3..." -ForegroundColor Yellow
+    cargo install bootimage --version 0.10.3 --force
 } else {
-    Write-Host "[4/4] cargo bootimage ya se encuentra instalado." -ForegroundColor Green
+    Write-Host "[4/4] cargo bootimage v0.10.3 ya se encuentra instalado." -ForegroundColor Green
 }
 
-Write-Host "`nListo! Ya podes compilar y correr el kernel con: cargo run (o .\run.ps1)" -ForegroundColor Cyan
+Write-Host "`nListo! Ya podes compilar y correr el kernel con: .\run.ps1 (o cargo run)" -ForegroundColor Cyan
