@@ -124,3 +124,4 @@ Para garantizar compilaciones reproducibles y soporte nativo en Windows y Linux:
      - [`ubuntu_preecompile.sh`](../ubuntu_preecompile.sh): instala `qemu-system-x86`, `qemu-utils`, componentes de `rustup` y `bootimage v0.10.3`.
 4. **Integración con VS Code ([`.vscode/tasks.json`](../.vscode/tasks.json) y [`.vscode/launch.json`](../.vscode/launch.json))**:
    - Tareas listas para compilar la imagen (`Build bootimage`), correr el kernel en QEMU (`Run kernel in QEMU`) y preparar el entorno en Windows (`Setup Windows Environment`).
+
