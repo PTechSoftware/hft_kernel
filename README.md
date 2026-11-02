@@ -1,5 +1,7 @@
 # kernel_ptechos
 
+Documentación detallada del estado actual y arquitectura del proyecto: [docs/RESUMEN_PROYECTO.md](docs/RESUMEN_PROYECTO.md).
+
 ## Setup
 
 ### Windows (PowerShell)
